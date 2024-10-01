@@ -1,5 +1,12 @@
 package com.douglasricardo.workshopmongo.resources;
 
+
+
+
+
+
+import java.net.URL;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,5 +38,19 @@ public class PostResource {
 	public ResponseEntity<List<Post>> findByTitle(@RequestParam(value = "text", defaultValue = "") String text) {
 		List<Post> list = service.findByTitle(text);
 		return ResponseEntity.ok().body(list);
+	}
+
+	@RequestMapping(value="/fullsearch", method=RequestMethod.GET)
+ 	public ResponseEntity<List<Post>> fullSearch(
+ 			@RequestParam(value="text", defaultValue="") String text,
+ 			@RequestParam(value="minDate", defaultValue="") String minDate,
+ 			@RequestParam(value="maxDate", defaultValue="") String maxDate) {
+		text = com.douglasricardo.workshopmongo.resources.util.URL.decodeParam(text);
+		Date min = com.douglasricardo.workshopmongo.resources.util.URL.convertDate(minDate, new Date(0L));
+		Date max = com.douglasricardo.workshopmongo.resources.util.URL.convertDate(maxDate, null);
+		List<Post> list = service.fullSearch(text, min, max);
+		
+		return ResponseEntity.ok().body(list);
+
 	}
 }
